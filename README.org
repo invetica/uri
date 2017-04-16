@@ -21,7 +21,12 @@ existing functionality provided by Java.
 * Warning! Data readers included
 This library includes a reader literal that will affect the way Clojure writes
 instances of ~java.net.URI~. If your do not want a URI to end up looking like
-~:invetica/uri "http://example.com/"~ do not add this to your codebase.
+the example below, do not add this to your codebase.
+
+#+begin_src clojure
+  {:user/name "Charlie Collie"
+   :user/website #invetica/uri "https://myspace.com/charlie.223"}
+#+end_src
 
 * Usage
 See the example in ~dev/invetica/uri/example.clj~.
