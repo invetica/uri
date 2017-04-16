@@ -1,6 +1,8 @@
 (defproject invetica/uri "0.1.0-SNAPSHOT"
   :description "Specs, generators, and common utilities for URIs."
   :url "https://github.com/invetica/uri"
+  :license {:name "The MIT License"
+            :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.9.0-alpha15"]]
   :min-lein-version "2.5.0"
   :aliases {"lint" ["do" ["whitespace-linter"] ["eastwood"]]}
