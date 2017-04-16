@@ -1,0 +1,73 @@
+#+STARTUP: showall
+
+*URI* makes working with URIs a little more convenient, without duplicating the
+existing functionality provided by Java.
+
+#+BEGIN_HTML
+<a href="https://circleci.com/gh/invetica/uri">
+  <img src="https://circleci.com/gh/invetica/uri.svg"></img>
+</a>
+
+<a href="https://clojars.org/invetica/uri">
+  <img src="https://img.shields.io/clojars/v/invetica/uri.svg"></img>
+</a>
+#+END_HTML
+
+* Contents                                                              :TOC:
+ - [[#warning-data-readers-included][Warning! Data readers included]]
+ - [[#usage][Usage]]
+ - [[#license][License]]
+
+* Warning! Data readers included
+This library includes a reader literal that will affect the way Clojure writes
+instances of ~java.net.URI~. If your do not want a URI to end up looking like
+~:invetica/uri "http://example.com/"~ do not add this to your codebase.
+
+* Usage
+See the example in ~dev/invetica/uri/example.clj~.
+
+The following specs are included:
+
+#+begin_src clojure :exports none
+  (->> (clojure.spec/registry)
+       keys
+       (filter keyword?)
+       (filter #(= "invetica.uri" (namespace %)))
+       sort)
+#+end_src
+
+- ~:invetica.uri/absolute-uri~
+- ~:invetica.uri/absolute-uri-str~
+- ~:invetica.uri/domain-part~
+- ~:invetica.uri/fragment~
+- ~:invetica.uri/host~
+- ~:invetica.uri/hostname~
+- ~:invetica.uri/ipv4~
+- ~:invetica.uri/ipv6~
+- ~:invetica.uri/octet~
+- ~:invetica.uri/path~
+- ~:invetica.uri/relative-uri~
+- ~:invetica.uri/relative-uri-str~
+- ~:invetica.uri/scheme~
+
+* License
+The MIT License (MIT)
+
+Copyright © 2017 Invetica Ltd
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
