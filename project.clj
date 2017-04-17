@@ -1,4 +1,4 @@
-(defproject invetica/uri "0.1.0"
+(defproject invetica/uri "0.2.0-SNAPSHOT"
   :description "Specs, generators, and common utilities for URIs."
   :url "https://github.com/invetica/uri"
   :license {:name "The MIT License"
