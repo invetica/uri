@@ -1,7 +1,9 @@
 (ns invetica.uri.example
-  (:require [invetica.uri :as uri]
-            [clojure.spec.alpha :as s])
-  (:import (java.net URI)))
+  (:require
+   [clojure.spec.alpha :as s]
+   [invetica.uri :as uri])
+  (:import
+   (java.net URI)))
 
 (s/def ::endpoint
   string?)
