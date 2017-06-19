@@ -1,9 +1,10 @@
 (ns invetica.uri
-  (:require [clojure.spec :as s]
-            [clojure.string :as str]
-            [clojure.spec.gen :as sgen])
-  (:import (java.net Inet4Address Inet6Address InetAddress
-                     URI URISyntaxException)))
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.spec.gen.alpha :as sgen]
+   [clojure.string :as str])
+  (:import
+   (java.net Inet4Address Inet6Address InetAddress URI URISyntaxException)))
 
 ;; -----------------------------------------------------------------------------
 ;; Generator utils

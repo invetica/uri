@@ -1,6 +1,7 @@
 (ns invetica.uri.literals
-  (:import java.net.URI
-           java.io.Writer))
+  (:import
+   (java.io Writer)
+   (java.net URI)))
 
 (defn uri
   [s]

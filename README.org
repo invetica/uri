@@ -34,7 +34,7 @@ See the example in ~dev/invetica/uri/example.clj~.
 The following specs are included:
 
 #+begin_src clojure :exports none
-  (->> (clojure.spec/registry)
+  (->> (clojure.spec.alpha/registry)
        keys
        (filter keyword?)
        (filter #(= "invetica.uri" (namespace %)))
