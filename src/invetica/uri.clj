@@ -1,7 +1,7 @@
 (ns invetica.uri
-  (:require [clojure.spec :as s]
+  (:require [clojure.spec.alpha :as s]
             [clojure.string :as str]
-            [clojure.spec.gen :as sgen])
+            [clojure.spec.gen.alpha :as sgen])
   (:import (java.net Inet4Address Inet6Address InetAddress
                      URI URISyntaxException)))
 
