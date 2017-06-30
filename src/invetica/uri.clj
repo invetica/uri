@@ -4,7 +4,7 @@
    [clojure.spec.gen.alpha :as sgen]
    [clojure.string :as str])
   (:import
-   (java.net Inet4Address Inet6Address InetAddress URI URISyntaxException)))
+   (java.net Inet4Address Inet6Address InetAddress URI URL URISyntaxException)))
 
 ;; -----------------------------------------------------------------------------
 ;; Generator utils
@@ -20,6 +20,11 @@
   ([k] (sgen/such-that some-string? k)))
 
 ;; -----------------------------------------------------------------------------
+;; Absolute
+
+(s/def ::absolute? boolean?)
+
+;; -----------------------------------------------------------------------------
 ;; Schemes
 
 (def ^:private schemes
@@ -27,6 +32,20 @@
 
 (s/def ::scheme
   (s/with-gen string? #(sgen/elements schemes)))
+
+;; -----------------------------------------------------------------------------
+;; User info
+
+(s/def ::user string?)
+(s/def ::password string?)
+
+(s/def ::user-info
+  (s/with-gen string?
+    (fn []
+      (sgen/fmap #(str/join ":" %)
+                 (sgen/vector
+                  (sgen/not-empty (sgen/string-alphanumeric))
+                  1 2)))))
 
 ;; -----------------------------------------------------------------------------
 ;; Ports
@@ -81,7 +100,8 @@
 (s/def ::host
   (s/with-gen string?
     (fn []
-      (sgen/one-of [(sgen/fmap str (s/gen ::ipv4))
+      (sgen/one-of [(sgen/fmap #(.getHostAddress ^Inet4Address %)
+                               (s/gen ::ipv4))
                     (s/gen ::hostname)
                     (sgen/fmap #(str "[" (.getHostAddress ^Inet6Address %) "]")
                                (s/gen ::ipv6))]))))
@@ -99,6 +119,11 @@
                    (sgen/one-of (conj (repeatedly 100 some-string)
                                       (sgen/return ".."))))
                   (maybe (some-string)))))))
+
+;; -----------------------------------------------------------------------------
+;; Query string
+
+(s/def ::query-string string?)
 
 ;; -----------------------------------------------------------------------------
 ;; Fragments
@@ -178,3 +203,74 @@
   (s/with-gen (s/and string? relative-uri-str?)
     (fn []
       (sgen/fmap str (s/gen ::relative-uri)))))
+
+;; -----------------------------------------------------------------------------
+;; Manipulation
+
+(s/def ::uri-map
+  (s/keys :req [::absolute?
+                ::path
+                ::scheme]
+          :opt [::fragment
+                ::password
+                ::port
+                ::query-string
+                ::user
+                ::user-info]))
+
+(defprotocol IParseURIs
+  (parse [x]))
+
+(defn- parse-user-info
+  [s]
+  (let [[user password] (str/split s #":" 2)]
+    {::password password
+     ::user user
+     ::user-info s}))
+
+(defn- parse*
+  [^URI uri]
+  (let [fragment     (.getFragment uri)
+        port         (.getPort uri)
+        query-string (.getQuery uri)
+        user-info    (.getUserInfo uri)]
+    (cond-> {::absolute? (.isAbsolute uri)
+             ::host      (.getHost uri)
+             ::path      (.getPath uri)
+             ::scheme    (.getScheme uri)}
+      (not= -1 port)       (assoc ::port port)
+      (some? fragment)     (assoc ::fragment fragment)
+      (some? query-string) (assoc ::query-string query-string)
+      (some? user-info)    (merge (parse-user-info user-info)))))
+
+(s/fdef parse-uri
+  :args (s/cat :x (s/or :str string? :uri uri?))
+  :ret (s/nilable ::uri-map))
+
+(extend-protocol IParseURIs
+  String
+  (parse [x] (some-> x try-parse parse*))
+  URI
+  (parse [x] (parse* x))
+  URL
+  (parse [x] (-> x .toURI parse*)))
+
+(defn- authority
+  [{:keys [::user-info ::host ::port]}]
+  (str (when user-info
+         (str user-info "@"))
+       host
+       (when (and port (not= -1 port))
+         (str ":" port))))
+
+(s/fdef unparse
+  :args (s/cat :m ::uri-map)
+  :ret uri?)
+
+(defn unparse
+  [m]
+  (URI. ^String (::scheme m)
+        ^String (authority m)
+        ^String (::path m)
+        ^String (::query-string m)
+        ^String (::fragment m)))

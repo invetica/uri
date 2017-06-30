@@ -14,9 +14,11 @@ existing functionality provided by Java.
 #+END_HTML
 
 * Contents                                                              :TOC:
- - [[#warning-data-readers-included][Warning! Data readers included]]
- - [[#usage][Usage]]
- - [[#license][License]]
+- [[#warning-data-readers-included][Warning! Data readers included]]
+- [[#usage][Usage]]
+  - [[#manipulation][Manipulation]]
+  - [[#specs][Specs]]
+- [[#license][License]]
 
 * Warning! Data readers included
 This library includes a reader literal that will affect the way Clojure writes
@@ -29,6 +31,56 @@ the example below, do not add this to your codebase.
 #+end_src
 
 * Usage
+** Manipulation
+To make is easier to modify URIs we have a ~invetica.uri/parse~ function that
+will convert something URI-like into a persistent hash map.
+
+#+begin_src clojure
+  (require '[invetica.uri :as uri])
+
+  (uri/parse "https://rich:S3creT@example.com:9999/foo?a=1&a=2")
+  ;; => #:invetica.uri{:absolute? true
+  ;;                   :host "example.com"
+  ;;                   :password "S3creT"
+  ;;                   :path "/foo"
+  ;;                   :port 9999
+  ;;                   :query-string "a=1&a=2"
+  ;;                   :scheme "https"
+  ;;                   :user "rich"
+  ;;                   :user-info "rich:S3creT"}
+#+end_src
+
+To convert a URI map back into a URI you can use ~invetica.uri/unparse~.
+
+#+begin_src clojure
+  (uri/unparse #:invetica.uri{:absolute? true
+                              :host "example.com"
+                              :password "S3creT"
+                              :path "/foo"
+                              :port 9999
+                              :query-string "a=1&a=2"
+                              :scheme "https"
+                              :user "rich"
+                              :user-info "rich:S3creT"})
+  ;; => #invetica/uri "https://rich:S3creT@example.com:9999/foo?a=1&a=2"
+#+end_src
+
+This makes it's easy to change any part of the URI using familiar Clojure
+functions like ~assoc~, ~merge~, ~update~, etc. An example of changing the path
+in a URI looks like this:
+
+#+begin_src clojure
+  (-> "https://example.com/foo?bar=baz#quux"
+      uri/parse
+      (assoc ::uri/path "/WOOT")
+      uri/unparse)
+  ;; => #invetica/uri "https://example.com/WOOT?bar=baz#quux"
+#+end_src
+
+Don't forget to use the ~:invetica.uri~ namespace! ~:path~ would not work in the
+above example.
+
+** Specs
 See the example in ~dev/invetica/uri/example.clj~.
 
 The following specs are included:
@@ -43,6 +95,8 @@ The following specs are included:
 
 - ~:invetica.uri/absolute-uri~
 - ~:invetica.uri/absolute-uri-str~
+- ~:invetica.uri/absolute?~
+- ~:invetica.uri/authority~
 - ~:invetica.uri/domain-part~
 - ~:invetica.uri/fragment~
 - ~:invetica.uri/host~
@@ -50,10 +104,16 @@ The following specs are included:
 - ~:invetica.uri/ipv4~
 - ~:invetica.uri/ipv6~
 - ~:invetica.uri/octet~
+- ~:invetica.uri/password~
 - ~:invetica.uri/path~
+- ~:invetica.uri/port~
+- ~:invetica.uri/query-string~
 - ~:invetica.uri/relative-uri~
 - ~:invetica.uri/relative-uri-str~
 - ~:invetica.uri/scheme~
+- ~:invetica.uri/uri-map~
+- ~:invetica.uri/user~
+- ~:invetica.uri/user-info~
 
 * License
 The MIT License (MIT)
