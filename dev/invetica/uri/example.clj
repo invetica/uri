@@ -15,7 +15,7 @@
   (s/or :absolute ::uri/absolute-uri
         :relative ::uri/relative-uri))
 
-(s/fdef str->uri
+(s/fdef endpoint+path
   :args (s/cat :api ::api :path ::uri/path)
   :ret ::uri/absolute-uri)
 
