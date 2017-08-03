@@ -13,4 +13,5 @@
          :plugins [[jonase/eastwood "0.2.3"]
                    [lein-eftest "0.3.1"]
                    [listora/whitespace-linter "0.1.0"]]
-         :source-paths ["dev"]}})
+         :source-paths ["dev"]}
+   :ci {:eftest {:report eftest.report.pretty/report}}})

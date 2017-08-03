@@ -16,4 +16,4 @@ jobs:
           paths:
             - ~/.m2
           key: project-{{ checksum "project.clj" }}
-      - run: lein do eftest, lint
+      - run: lein with-profile +ci do eftest, lint
