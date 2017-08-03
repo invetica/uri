@@ -7,7 +7,8 @@
   :min-lein-version "2.5.0"
   :profiles
   {:dev {:aliases {"lint" ["do" ["whitespace-linter"] ["eastwood"]]}
-         :dependencies [[invetica/spec "0.4.0"]
+         :dependencies [[eftest "0.3.1"]
+                        [invetica/spec "0.4.0"]
                         [org.clojure/test.check "0.10.0-alpha1"]
                         [org.clojure/tools.namespace "0.3.0-alpha4"]]
          :plugins [[jonase/eastwood "0.2.3"]
